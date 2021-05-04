@@ -14,11 +14,11 @@ db.list().then(keys => {
     db.get(key).then(logs => {
       //eight = new Date("2021-05-02T14:30:00Z")
       //console.log(eight.getTime())
-      // if(logs.userName=="jeesu#8980"){
+        //if(logs.userName=="Mansi Das#2644"){
       //    logs.info.splice(1, 1)
-      //   logs.startDate=1620052200647
+          
       //   db.set(key, logs)
-      // }
+      //  }
       console.log(logs)
     })
   })
@@ -32,11 +32,12 @@ db.list().then(keys => {
 //         }
 //db.set('abs', obj)
 
+//============utility methods=============
 const embedder = async (msg, str) => {
   const embed = new Discord.MessageEmbed()
     .setColor("#"+Math.floor(Math.random()*16777215).toString(16))
-    .setDescription(str)
-  msg.channel.send(embed)
+    .setDescription(str===""?'Its empty':str)
+  return msg.channel.send(embed)
 }
 
 const add = async (msg, logg) => {
@@ -178,16 +179,76 @@ const isOpen = async (msg, user)=>{
 const listAll = async (msg, logs)=>{
   n = logs.length
   display = ""
+  final=[]
   prev = -1
+  count=0
   while(n--){
     if(logs[n].date!=prev){
       prev=logs[n].date;
-      display += "**Day#"+logs[n].date+"**"
+      str = "**Day#"+logs[n].date+"**"
+      if(str.length+display.length>2048){
+        console.log(str.length+""+display.length)
+        final.push(display)
+        display=""
+      }
+      display+="\n"+str
     }
-    display+= " - "+logs[n].logged+"\n";
+    str = "- "+logs[n].logged
+    if(str.length+display.length>2048){
+      // console.log(`lower if`)
+      final.push(display)
+      display=""
+    }
+    display+=str+"\n"
   }
-  //msg.channel.send(display);
-  embedder(msg, display);
+  final.push(display)
+  if(final.length!=1){
+    n=1
+    const embed = new Discord.MessageEmbed().setColor(0x344ceb)
+    .setFooter(`Page ${n} of ${final.length}`)
+    .setDescription(final[n-1])
+
+    msg.channel.send(embed).then(newMsg => {
+      newMsg.react('🔼').then(more => {//want more ? XD
+        newMsg.react('🔽')
+        
+        //filters
+        const upFilter = (r, u) => r.emoji.name==='🔼' && !u.bot// && u.id===msg.author.id
+        const downFilter = (r, u) => r.emoji.name==='🔽' && !u.bot
+
+        const up = newMsg.createReactionCollector(upFilter, {time:60000})
+        const down = newMsg.createReactionCollector(downFilter, {time:60000})
+
+        up.on('collect', (reaction, user) => {
+          if(n===1){
+            newMsg.reactions.resolve('🔼').users.remove(user.id)
+            return
+          }
+          n--
+          embed.setDescription(final[n-1])
+          embed.setFooter(`Page ${n} of ${final.length}`)
+          newMsg.edit(embed)
+          up.empty()
+          newMsg.reactions.resolve('🔼').users.remove(user.id)
+        })
+
+        down.on('collect', (reaction, user) => {
+          if(n===final.length){
+            newMsg.reactions.resolve('🔽').users.remove(user.id)
+            return
+          }
+          n++
+          embed.setDescription(final[n-1])
+          embed.setFooter(`Page ${n} of ${final.length}`)
+          newMsg.edit(embed)
+          down.empty()
+          newMsg.reactions.resolve('🔽').users.remove(user.id)
+        })
+      })
+    })
+  } else {
+    embedder(msg, final[0])
+  }
 }
 
 const streak = async (msg, user, logs, startDate) => {
@@ -211,12 +272,25 @@ const streak = async (msg, user, logs, startDate) => {
   }
 }
 
+
+//============= bot online listener ==============
 client.on('ready', () => {
   console.log(`The Bot is online as ${client.user.tag}!`)
+  client.user.setPresence({
+    activity: {
+      name: '++help with discord.js' },
+      status: 'online',
+      type: 'LISTENING',
+      url: 'https://discord.com/api/oauth2/authorize?client_id=838101838845706300&permissions=2148002880&scope=bot',
+      emoji: '😉',
+      createdTimestamp: 1619965800000
+  })
+  .catch(console.error);
 })
 
+//============== message listener ====================
 client.on('message', msg => {
-  if(msg.author.bot) return;
+  if(msg.author.bot||!msg.content.startsWith("++")) return;
 
   console.log("arree");
   console.log(msg.author.id+" "+msg.author.tag)
@@ -342,7 +416,14 @@ client.on('message', msg => {
     }
   }
 
+  if(msg.content.startsWith("++info")){
+    const embed = new Discord.MessageEmbed()
+    .setTitle('~Info about me~')
+    .setColor('0x0000ff')
+    .setDescription('Whenever You start your first log, i will capture the time to be your start time. For each 24 days from that time your days will be calculated.\nAs:\nFor 24 hours it will be day 1.\nNext 24 hours will be day 2(no matter when you log afterwards).\n**There is no option to add in previous day** (and why would you log in previous day anyway).\nYou can also use multiple \`++add\` to push your current day logs together!')
 
+    msg.channel.send(embed)
+  }
 
   if(msg.content.startsWith("++help")){
     const embed = new Discord.MessageEmbed().setTitle('All commands you can use!').setColor('0x00ff00').setDescription(`Log your daily activities with these easy commands!!\n*Remember you cannot edit any logs of previous days. Hence choose wisely!*`).addFields(
@@ -353,7 +434,8 @@ client.on('message', msg => {
     { name: '\`++privacy {on|off|null|userTag}\`', value: 'to set your privacy setting on or off. Or null to check your current settings.\n*Also when your privacy is on, the logs you \`++add\` will automatically be deleted so no need to worry!*\nTag another user to check there privacy!!', inline:true},
     { name: '\`++update {log}\`', value: 'to remove all logs of today and set the specified log as the only log.', inline:true},
 		{ name: '\`++del {day_no}\`', value: 'it deletes all the logs for the day specified in the arguments.', inline:true},
-    {name: '\`++streak {userTag|null}\`', value: 'To get the current streak for your or someone\'s DaysOfCode!', inline:true}
+    {name: '\`++streak {userTag|null}\`', value: 'To get the current streak for your or someone\'s DaysOfCode!', inline:true},
+    {name: '\`++info\`', value: 'Show information about I work.'}
 	)
     msg.channel.send(embed)
   }
