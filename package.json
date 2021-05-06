@@ -1,14 +1,14 @@
 {
   "name": "Logger-BOT",
   "version": "1.0.0",
-  "description": "",
+  "description": "A discord Bot to log your daily activities efficiently do much more!",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "pratyushgguptaa",
+  "license": "MIT",
   "dependencies": {
     "@replit/database": "^2.0.1",
     "datejs": "^1.0.0-rc3",
