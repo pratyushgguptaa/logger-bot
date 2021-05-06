@@ -1,0 +1,20 @@
+{
+  "name": "Logger-BOT",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@replit/database": "^2.0.1",
+    "datejs": "^1.0.0-rc3",
+    "discord.js": "^12.5.3",
+    "express": "^4.17.1",
+    "inspirational-quotes": "^1.0.8",
+    "node-fetch": "^2.6.1"
+  }
+}
