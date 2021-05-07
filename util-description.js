@@ -1,5 +1,13 @@
 const Discord = require('discord.js')
 
+/**
+ * To print the information in an embed with the basic working
+ * creating a @constructor MessageEmbed and then all its
+ * @functions {setTitle, setColor, setDescription}
+ * and at last calling the @function send
+ * with the embed object as @argument
+ * @param {Message} msg Discord Message with prefix '++info'
+ */
 const info = async (msg) => {
   const embed = new Discord.MessageEmbed()
     .setTitle('~Info about me~')
@@ -11,6 +19,14 @@ const info = async (msg) => {
   msg.channel.send(embed)
 }
 
+/**
+ * To send in an embed all the commands executable on the bot
+ * Different fields are added in the @constructor MessageEmbed
+ * @function addFields and each argument is a field with
+ * @param {name, value} [inline = false] the field details
+ * and whether the field will be inline or not
+ * @param {Message} msg Discord Message with prefix '++help'
+ */
 const help = async (msg) => {
   const embed = new Discord.MessageEmbed()
     .setTitle('All commands you can use!')

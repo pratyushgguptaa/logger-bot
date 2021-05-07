@@ -1,10 +1,17 @@
+//strict mode is not for me right now 😬
+
 //requiring modules
 const Discord = require('discord.js')
+
+//server module which will be pinged to keep the server ON
 const stayOn = require('./server')
 
 //to interact with the repl.it database
 const Database = require('@replit/database')
 
+//these are all the utility functions
+//for all the required stuff have been divided
+//(took even more time than actual coding)
 const { add, update } = require('./util-add')
 const { del, reset } = require('./util-del')
 const { privacy } = require('./util-privacy')
@@ -30,24 +37,6 @@ const client = new Discord.Client()
 //   open:true
 // }
 
-//db.getAll()
-//db.get('691267340846759978').then(console.log)
-
-db.list().then((keys) => {
-  keys.forEach((key) => {
-    db.get(key).then((logs) => {
-      if (logs.userName === 'Nishi#9040') {
-        //logs.info.splice(0, 1)
-        logs['startDate'] = 1620138600489
-        db.set(key, logs)
-        //   })
-        //  })
-      }
-      console.log(logs)
-    })
-  })
-})
-
 //============= bot online listener ==============
 client.on('ready', () => {
   console.log(`The Bot is online as ${client.user.tag}!`)
@@ -68,8 +57,6 @@ client.on('ready', () => {
 //============== message listener ====================
 client.on('message', (msg) => {
   if (msg.author.bot || !msg.content.startsWith('++')) return
-
-  console.log(msg.author.id + ' ' + msg.author.tag)
 
   if (msg.content.startsWith('++add')) add(msg)
 
@@ -92,5 +79,9 @@ client.on('message', (msg) => {
   if (msg.content.startsWith('++profile')) utilProfile(msg)
 })
 
+//server start
 stayOn()
+
+//the TOKEN of discord BOT
+//obtained from discord developer portal
 client.login(process.env.TOKEN)
