@@ -5,21 +5,19 @@ const {embedder} = require('./utility')
 
 const add = async (msg) => {
   newLog = msg.content.split("++add")[1].trim()
-  if(newLog === ""){
-    embedder(msg, `Cannot add empty log.`)
-    return
-  }
+  if(newLog === "")
+    return embedder(msg, `Cannot add empty log.`)
   db.get(msg.author.id+"").then(logs => {
-    if (logs && typeof logs.info !== 'undefined' && logs.info.length > 0) {
+    if (logs && typeof logs.info !== 'undefined'){
       var milli = Date.now() - logs.startDate;
       var days = Math.floor(1 + milli / (1000*3600*24));
 
       logs.info.push({logged: newLog, date: days})
       db.set(msg.author.id+"", logs).then(()=>{
-        embedder(msg, `You have successfully logged in for day ${days}\nYay you did it! Remember to log next day 🥰`)
+        embedder(msg, `${msg.author}, you have successfully logged in for day ${days}\nYay you did it! Remember to log next day 🥰`)
       })
       
-      if(!logs.open)
+      if(!logs.open && msg.channel.type!=='dm')
         msg.delete().then(console.log('Msg deleted')).catch(console.error)
 
     } else {
@@ -42,18 +40,20 @@ const add = async (msg) => {
 
 const update = async (msg) => {
   newLog = msg.content.split("++update")[1].trim()
+  if(newLog === "")
+    return embedder(msg, `Cannot add empty log.`)
   db.get(msg.author.id+"").then(logs => {
-    if (logs && typeof logs.info !== 'undefined' && logs.info.length > 0) {
+    if (logs && typeof logs.info !== 'undefined'){
       var milli = Date.now() - logs.startDate;
       var day = Math.floor(1 + milli / (1000*3600*24));
 
       logs.info = logs.info.filter(log => log.date!=day)
       logs.info.push({logged: newLog, date: day})
-      db.set(msg.author.id+"", logs).then(()=>{
-        embedder(msg, `You have successfully updated your logs for day ${day}`)
-      })
+      db.set(msg.author.id+"", logs).then(()=>
+        embedder(msg, `${msg.author}, you have successfully updated your logs for day ${day}`)
+      )
 
-      if(!logs.open)
+      if(!logs.open && msg.channel.type!=='dm')
         msg.delete().then(console.log('Msg deleted')).catch(console.error)
     } else
       db.set(msg.author.id+"", {

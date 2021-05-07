@@ -62,8 +62,7 @@ const profile = async (msg, user, logs) => {
     name:'Quote of the Day',
     value: `${quotation.text}\n‎‎‎*-${quotation.author}*`
   })
-    
-
+  
   msg.channel.send(embed)
 }
 
