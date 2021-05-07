@@ -6,10 +6,10 @@ server.all('/', (req, res) => {
   res.send("Bot is running baby")
 })
 
-function keepAlive(){
+function stayOn(){
   server.listen(3000, () => {
     console.log("Server is ready")
   })
 }
 
-module.exports = keepAlive
+module.exports = stayOn
