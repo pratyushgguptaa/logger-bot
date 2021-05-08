@@ -1,11 +1,21 @@
 const Database = require('@replit/database')
 const db = new Database()
 
+/**
+ * To route to the resective @function open|isOpen with the message
+ * based on any @mentions present in the message
+ * @param {Message} msg Discord Message instantiated the event 'message'
+ */
 const privacy = async (msg) => {
   if (msg.mentions.users.first() === undefined) open(msg)
   else isOpen(msg)
 }
 
+/**
+ * To do one out of three things based on the content of the message
+ * if it is required to change the setting on or off or to just show the current settings
+ * @param {Message} msg Discord message which created the event 'message'
+ */
 const open = async (msg) => {
   setting = msg.content.split('++privacy')[1].trim()
   db.get(msg.author.id + '').then((logs) => {
@@ -33,14 +43,17 @@ const open = async (msg) => {
               : `on. No one can tag and check your logs except you`
           }`
         )
-    } else {
+    } else
       msg.reply(
         'Sorry you must start your first log in order to change your privacy settings.'
       )
-    }
   })
 }
 
+/**
+ * To check whether the user tagged in the message content has privacy open or hidden
+ * @param {Message} msg Discord Message which created the event 'message'
+ */
 const isOpen = async (msg) => {
   user = msg.mentions.users.first()
   db.get(user.id + '').then((logs) => {
