@@ -10,7 +10,7 @@ const { totalDays } = require('./util-functions')
 /**
  * To add the given log into the record of the sender
  * @param {Message} msg Discord Message prefix '++add'
- * @returns 
+ * @returns {Promise<Message>|<Message[]>} the new DIscord Message sent from the bot
  */
 const add = async (msg) => {
   /**
@@ -69,8 +69,10 @@ const add = async (msg) => {
 }
 
 /**
- * 
+ * To clear out all the logs of current day for the author of the message
+ * And add only the log present in the content with prefix '++update '
  * @param {Message} msg Discord Message with prefix '++update'
+ * @return {Promise<Message>|<Message[]>} the new DIscord Message sent from the bot
  */
 const update = async (msg) => {
   /**
