@@ -7,6 +7,7 @@ const Discord = require('discord.js')
  * and at last calling the @function send
  * with the embed object as @argument
  * @param {Message} msg Discord Message with prefix '++info'
+ * @return {MessageEmbed} the new embed created
  */
 const info = async (msg) => {
   const embed = new Discord.MessageEmbed()
@@ -26,6 +27,7 @@ const info = async (msg) => {
  * @param {name, value} [inline = false] the field details
  * and whether the field will be inline or not
  * @param {Message} msg Discord Message with prefix '++help'
+ * @return {MessageEmbed} the new embed created
  */
 const help = async (msg) => {
   const embed = new Discord.MessageEmbed()

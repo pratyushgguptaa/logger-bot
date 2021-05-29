@@ -1,11 +1,25 @@
+//require database and instantiating db object
 const Database = require('@replit/database')
 const db = new Database()
 
+//requiring all other utility functions
 const { embedder, profile } = require('./utility')
 const { streak } = require('./util-check')
 const { listAll } = require('./util-list')
 
-//just checking now
+/**
+ * Creates a list of buttons for all the basic uses
+ * And send it to the msg.channel
+ * The buttons are shown:
+ * 1. Streak to show current streak
+ * 2. List to list all Logs
+ * 3. Profile to show profile
+ * 4. Info to show information about the bot
+ * 5. Help to show all the commands the bot can listen to
+ *
+ * @param {Discord-buttons(client)} but the object required from discord-buttons.js with the discord.js client
+ * @param {Message} msg the message with ++buttons prefix
+ */
 const button = async (but, msg) => {
   const btn1 = new but.MessageButton()
     .setLabel('Streak')
@@ -35,6 +49,11 @@ const button = async (but, msg) => {
   )
 }
 
+/**
+ * To show the current streak for the user who clicked the button and send message accordingly.
+ *
+ * @param {MessageButton} button the button which listened to onclick event for streak button
+ */
 const getStreak = async (button) => {
   db.get(button.clicker.user.id + '').then((logs) => {
     if (logs != null && typeof logs.info !== 'undefined')
@@ -47,6 +66,13 @@ const getStreak = async (button) => {
   })
 }
 
+/**
+ * To show the in embed the profile of the user
+ * who clicked the button and call utility function
+ * profile to do so.
+ *
+ * @param {MessageButton} button which listened to the onclick event for profile button
+ */
 const getProfile = async (button) => {
   db.get(button.clicker.user.id).then((logs) => {
     if (logs != null && typeof logs.info !== 'undefined')
@@ -58,6 +84,10 @@ const getProfile = async (button) => {
   })
 }
 
+/**
+ *
+ * @param {MessageButton} button which listened to onclick for the button List and call accordingly the listAll utility function
+ */
 const getList = async (button) => {
   db.get(button.clicker.user.id + '').then((logs) => {
     if (
