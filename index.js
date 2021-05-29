@@ -6,8 +6,9 @@ const Discord = require('discord.js')
 //server module which will be pinged to keep the server ON
 const stayOn = require('./server')
 
-//to interact with the repl.it database
-const Database = require('@replit/database')
+//chalk to for colorful output and discord-buttons for...
+const disbut = require('discord-buttons')(client)
+const chalk = require('chalk')
 
 //these are all the utility functions
 //for all the required stuff have been divided
@@ -17,10 +18,9 @@ const { del, reset } = require('./util-del')
 const { privacy } = require('./util-privacy')
 const { info, help } = require('./util-description')
 const { utilProfile, utilStreak, utilList } = require('./util-check')
+const { button, getStreak, getProfile, getList } = require('./button')
 
-//instantiating the database object and
-//the discord bot to get started
-const db = new Database()
+//instantiating the discord bot to get started
 const client = new Discord.Client()
 
 // each value element present in the database
@@ -44,13 +44,24 @@ client.on('ready', () => {
     .setPresence({
       status: 'online',
       activity: {
-        name: '++help with discord.js',
+        name: '++buttons with discord-buttons.js',
         type: 'LISTENING',
-        url:
-          'https://discord.com/api/oauth2/authorize?client_id=838101838845706300&permissions=2148002880&scope=bot',
+        url: 'https://discord.com/api/oauth2/authorize?client_id=838101838845706300&permissions=2148002880&scope=bot',
       },
     })
-    .then(console.log)
+    .then((bot) => {
+      console.log(bot)
+      console.log(chalk.green(`Logged in as ${client.user.tag}!`))
+      console.log(chalk.yellow(`Servers! ["${client.guilds.cache.size}"]`))
+      console.log(
+        chalk.cyan(
+          `User Count! ["${client.guilds.cache.reduce(
+            (a, v) => a + v.memberCount,
+            0
+          )}"]`
+        )
+      )
+    })
     .catch(console.error)
 })
 
@@ -68,15 +79,47 @@ client.on('message', (msg) => {
 
   if (msg.content.startsWith('++privacy')) privacy(msg)
 
-  if (msg.content.startsWith('++info')) info(msg)
+  if (msg.content.startsWith('++info'))
+    info(msg).then((embed) => msg.channel.send(embed))
 
-  if (msg.content.startsWith('++help')) help(msg)
+  if (msg.content.startsWith('++help'))
+    help(msg).then((embed) => msg.channel.send(embed))
 
   if (msg.content.startsWith('++list')) utilList(msg)
 
   if (msg.content.startsWith('++streak')) utilStreak(msg)
 
   if (msg.content.startsWith('++profile')) utilProfile(msg)
+
+  if (msg.content.startsWith('++buttons')) button(disbut, msg)
+})
+
+//============== button click listener ====================
+client.on('clickButton', async (button) => {
+  if (button.id === 'getStreak') {
+    button.defer()
+    getStreak(button)
+  }
+
+  if (button.id === 'getInfo')
+    info(button).then((embed) =>
+      button.reply.send('', { embed: embed, ephemeral: true })
+    )
+
+  if (button.id === 'getHelp')
+    help(button).then((embed) =>
+      button.reply.send('', { embed: embed, ephemeral: true })
+    )
+
+  if (button.id === 'getProfile') {
+    button.defer()
+    getProfile(button)
+  }
+
+  if (button.id === 'getList') {
+    button.defer()
+    getList(button)
+  }
 })
 
 //server start

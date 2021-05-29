@@ -15,8 +15,8 @@ const info = async (msg) => {
     .setDescription(
       'Whenever You start your first log, i will capture the time to be your start time. For each 24 days from that time your days will be calculated.\nAs:\nFor 24 hours it will be day 1.\nNext 24 hours will be day 2 (no matter when you log afterwards).\n**There is no option to add in previous day** (and why would you log in previous day anyway).\nYou can also use multiple `++add` to push your current day logs together!\n\nUse `++help` to know more about my functionalities.'
     )
-
-  msg.channel.send(embed)
+    .setFooter('v1.1.0', msg.client.user.avatarURL())
+  return embed
 }
 
 /**
@@ -83,7 +83,8 @@ const help = async (msg) => {
         inline: true,
       }
     )
-  msg.channel.send(embed)
+    .setFooter('v1.1.0', msg.client.user.avatarURL())
+  return embed
 }
 
 module.exports = {
