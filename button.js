@@ -8,6 +8,23 @@ const { streak } = require('./util-check')
 const { listAll } = require('./util-list')
 
 /**
+ * Creates a messageButton, sets its label, style and id from the given parameters and returns the button
+ * 
+ * @param {Button Label} label the Label of the newly created button
+ * @param {Button Style} style the Style of the newly created button
+ * @param {Button ID} id the ID of the newly created button
+ * @returns {MessageButton} messageButton the newly created button 
+ */
+function createMessageButton(label, style, id) {
+  const messageButton = new but.MessageButton()
+    .setLabel(label)
+    .setStyle(style)
+    .setID(id)
+
+  return messageButton;
+}
+
+/**
  * Creates a list of buttons for all the basic uses
  * And send it to the msg.channel
  * The buttons are shown:
@@ -21,26 +38,12 @@ const { listAll } = require('./util-list')
  * @param {Message} msg the message with ++buttons prefix
  */
 const button = async (but, msg) => {
-  const btn1 = new but.MessageButton()
-    .setLabel('Streak')
-    .setStyle('red')
-    .setID('getStreak')
-  const btn2 = new but.MessageButton()
-    .setLabel('List')
-    .setStyle('green')
-    .setID('getList')
-  const btn3 = new but.MessageButton()
-    .setLabel('Profile')
-    .setStyle('green')
-    .setID('getProfile')
-  const btn4 = new but.MessageButton()
-    .setLabel('Info')
-    .setStyle('blurple')
-    .setID('getInfo')
-  const btn5 = new but.MessageButton()
-    .setLabel('Help')
-    .setStyle('blurple')
-    .setID('getHelp')
+  const btn1 = createMessageButton('Streak', 'red', 'getStreak')
+  const btn2 = createMessageButton('List', 'green', 'getList')
+  const btn3 = createMessageButton('Profile', 'green', 'getProfile')
+  const btn4 = createMessageButton('Info', 'blurple', 'getInfo')
+  const btn5 = createMessageButton('Help', 'blurple', 'getHelp')
+
   msg.channel.send(
     'Discord Updates with buttons!\nNow type less *interact* more\nClick on the streak button to check your streak 😃',
     {
