@@ -9,11 +9,11 @@ const { listAll } = require('./util-list')
 
 /**
  * Creates a messageButton, sets its label, style and id from the given parameters and returns the button
- * 
+ *
  * @param {Button Label} label the Label of the newly created button
  * @param {Button Style} style the Style of the newly created button
  * @param {Button ID} id the ID of the newly created button
- * @returns {MessageButton} messageButton the newly created button 
+ * @returns {MessageButton} messageButton the newly created button
  */
 function createMessageButton(label, style, id) {
   const messageButton = new but.MessageButton()
@@ -21,7 +21,7 @@ function createMessageButton(label, style, id) {
     .setStyle(style)
     .setID(id)
 
-  return messageButton;
+  return messageButton
 }
 
 /**

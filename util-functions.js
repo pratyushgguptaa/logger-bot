@@ -15,7 +15,7 @@ const calculateStreak = async (logs, startDate) => {
   day = await totalDays(startDate)
   str = 1
   n = logs.length - 1
-  
+
   //if log for current day is not present streak = 0
   if (day != logs[n].date) return 0
   else {

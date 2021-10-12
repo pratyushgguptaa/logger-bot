@@ -108,13 +108,14 @@ const update = async (msg) => {
        */
       if (!logs.open && msg.channel.type !== 'dm')
         msg.delete().then(console.log('Msg deleted')).catch(console.error)
-    } else
-      //create a new record for the user
+    }
+    //create a new record for the user
+    else
       db.set(msg.author.id + '', {
         userName: msg.author.tag,
         info: [{ logged: newLog, date: 1 }],
         startDate: Date.now(),
-        open: true
+        open: true,
       }).then(() => {
         embedder(msg, `You didnt have any logs. Logging your first DayOfCode!!`)
       })

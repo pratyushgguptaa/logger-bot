@@ -16,5 +16,8 @@
     "express": "^4.17.1",
     "inspirational-quotes": "^1.0.8",
     "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.4.1"
   }
 }
